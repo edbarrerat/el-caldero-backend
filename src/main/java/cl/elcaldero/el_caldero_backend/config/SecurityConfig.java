@@ -18,6 +18,7 @@ public class SecurityConfig {
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/*").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/estados", "/api/estados/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/metodos-pago", "/api/metodos-pago/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/productos").denyAll()
                 .requestMatchers(HttpMethod.PUT, "/api/productos/*").denyAll()
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/*").denyAll()

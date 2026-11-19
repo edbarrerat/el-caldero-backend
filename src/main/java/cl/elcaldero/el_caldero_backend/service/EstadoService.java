@@ -1,9 +1,11 @@
 package cl.elcaldero.el_caldero_backend.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import cl.elcaldero.el_caldero_backend.dto.EstadoDTO;
 import cl.elcaldero.el_caldero_backend.model.Estado;
 import cl.elcaldero.el_caldero_backend.repository.EstadoRepository;
 
@@ -16,32 +18,60 @@ public class EstadoService {
         this.estadoRepository = estadoRepository;
     }
 
-    public List<Estado> listarEstados() {
-        return estadoRepository.findAll();
+    public List<EstadoDTO> listarEstados() {
+        List<Estado> estados = estadoRepository.findAll();
+        List<EstadoDTO> estadosDTO = new ArrayList<>();
+
+        for (Estado estado : estados) {
+            EstadoDTO dto = new EstadoDTO();
+
+            dto.setIdEstado(estado.getIdEstado());
+            dto.setNombre(estado.getNombre());
+
+            estadosDTO.add(dto);
+        }
+
+        return estadosDTO;
     }
 
-    public Estado guardarEstado(Estado estado) {
-        return estadoRepository.save(estado);
+    public EstadoDTO guardarEstado(EstadoDTO dto) {
+        Estado estado = new Estado();
+
+        estado.setNombre(dto.getNombre());
+
+        Estado estadoGuardado = estadoRepository.save(estado);
+
+        EstadoDTO respuesta = new EstadoDTO();
+        respuesta.setIdEstado(estadoGuardado.getIdEstado());
+        respuesta.setNombre(estadoGuardado.getNombre());
+
+        return respuesta;
     }
 
-    public Estado actualizarEstado(Integer id, Estado estado) {
-        Estado estadoExistente = estadoRepository.findById(id).orElse(null);
+    public EstadoDTO actualizarEstado(Integer id, EstadoDTO dto) {
+        Estado estado = estadoRepository.findById(id).orElse(null);
 
-        if (estadoExistente == null) {
+        if (estado == null) {
             return null;
         }
 
-        estadoExistente.setNombre(estado.getNombre());
+        estado.setNombre(dto.getNombre());
 
-        return estadoRepository.save(estadoExistente);
+        Estado estadoActualizado = estadoRepository.save(estado);
+
+        EstadoDTO respuesta = new EstadoDTO();
+        respuesta.setIdEstado(estadoActualizado.getIdEstado());
+        respuesta.setNombre(estadoActualizado.getNombre());
+
+        return respuesta;
     }
 
     public boolean eliminarEstado(Integer id) {
-        if (estadoRepository.existsById(id)) {
-            estadoRepository.deleteById(id);
-            return true;
+        if (!estadoRepository.existsById(id)) {
+            return false;
         }
 
-        return false;
+        estadoRepository.deleteById(id);
+        return true;
     }
 }
