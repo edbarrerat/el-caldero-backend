@@ -1,3 +1,4 @@
+
 package cl.elcaldero.el_caldero_backend.config;
 
 import org.springframework.context.annotation.Bean;
@@ -15,11 +16,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/error").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/productos").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/productos").permitAll()
-                .requestMatchers(HttpMethod.PUT, "/api/productos/*").permitAll()
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/*").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/productos").denyAll()
+                .requestMatchers(HttpMethod.PUT, "/api/productos/*").denyAll()
+                .requestMatchers(HttpMethod.DELETE, "/api/productos/*").denyAll()
+                .anyRequest().denyAll()
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
