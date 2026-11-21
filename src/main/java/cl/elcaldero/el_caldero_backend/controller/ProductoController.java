@@ -1,7 +1,9 @@
+
 package cl.elcaldero.el_caldero_backend.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import cl.elcaldero.el_caldero_backend.model.Producto;
+import cl.elcaldero.el_caldero_backend.dto.ProductoDTO;
 import cl.elcaldero.el_caldero_backend.service.ProductoService;
 import jakarta.validation.Valid;
 
@@ -27,20 +29,19 @@ public class ProductoController {
     }
 
     @GetMapping
-    public List<Producto> listarProductos() {
+    public List<ProductoDTO> listarProductos() {
         return productoService.listarProductos();
     }
 
     @PostMapping
-    public ResponseEntity<Producto> guardarProducto(@Valid @RequestBody Producto producto) {
-        Producto productoGuardado = productoService.guardarProducto(producto);
-
-        return ResponseEntity.status(201).body(productoGuardado);
+    public ResponseEntity<ProductoDTO> guardarProducto(@Valid @RequestBody ProductoDTO dto) {
+        ProductoDTO nuevoProducto = productoService.guardarProducto(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizarProducto(@PathVariable Integer id, @Valid @RequestBody Producto producto) {
-        Producto productoActualizado = productoService.actualizarProducto(id, producto);
+    public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable Integer id, @Valid @RequestBody ProductoDTO dto) {
+        ProductoDTO productoActualizado = productoService.actualizarProducto(id, dto);
 
         if (productoActualizado == null) {
             return ResponseEntity.notFound().build();
@@ -53,10 +54,10 @@ public class ProductoController {
     public ResponseEntity<Void> eliminarProducto(@PathVariable Integer id) {
         boolean eliminado = productoService.eliminarProducto(id);
 
-        if (eliminado) {
-            return ResponseEntity.noContent().build();
+        if (!eliminado) {
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }
