@@ -18,7 +18,7 @@ import cl.elcaldero.el_caldero_backend.service.EstadoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/estados")
+@RequestMapping("/api/v1/estados")
 public class EstadoController {
 
     private final EstadoService estadoService;

@@ -18,7 +18,7 @@ import cl.elcaldero.el_caldero_backend.service.MetodoEnvioService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/metodos-envio")
+@RequestMapping("/api/v1/metodos-envio")
 public class MetodoEnvioController {
 
     private final MetodoEnvioService metodoEnvioService;

@@ -19,7 +19,7 @@ import cl.elcaldero.el_caldero_backend.service.MetodoPagoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/metodos-pago")
+@RequestMapping("/api/v1/metodos-pago")
 public class MetodoPagoController {
 
     private final MetodoPagoService metodoPagoService;
