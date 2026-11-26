@@ -48,14 +48,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = authorization.substring(7);
 
-        if (!jwtService.validarToken(token)) {
+        Integer idUsuario = jwtService.obtenerIdUsuario(token);
+
+        if (idUsuario == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String email = jwtService.obtenerEmail(token);
-
-        Usuario usuario = usuarioRepository.findByEmailIgnoreCase(email);
+        Usuario usuario = usuarioRepository.findById(idUsuario).orElse(null);
 
         if (usuario == null || !Boolean.TRUE.equals(usuario.getActivo())) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

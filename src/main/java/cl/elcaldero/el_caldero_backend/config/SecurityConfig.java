@@ -16,6 +16,8 @@ import cl.elcaldero.el_caldero_backend.service.JwtService;
 import cl.elcaldero.el_caldero_backend.repository.UsuarioRepository;
 import cl.elcaldero.el_caldero_backend.repository.RolRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -40,17 +42,28 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.setStatus(HttpServletResponse.SC_FORBIDDEN))
+                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/v1/productos", "/api/v1/productos/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/estados", "/api/v1/estados/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/metodos-pago", "/api/v1/metodos-pago/*").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/metodos-envio", "/api/v1/metodos-envio/*").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/api/v1/usuarios/registro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/autenticacion/login").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/v1/productos", "/api/v1/productos/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/metodos-pago", "/api/v1/metodos-pago/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/metodos-envio", "/api/v1/metodos-envio/*").permitAll()
+
+                        .requestMatchers("/api/v1/productos", "/api/v1/productos/*").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/estados", "/api/v1/estados/*").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/metodos-pago", "/api/v1/metodos-pago/*").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/metodos-envio", "/api/v1/metodos-envio/*").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/v1/usuarios", "/api/v1/usuarios/*").hasRole("ADMINISTRADOR")
+
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/productos").denyAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/productos/*").denyAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/productos/*").denyAll()
                         .anyRequest().denyAll()
                 )
                 .addFilterBefore(

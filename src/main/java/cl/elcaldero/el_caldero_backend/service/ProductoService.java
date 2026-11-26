@@ -42,6 +42,29 @@ public class ProductoService {
         return productosDTO;
     }
 
+    public ProductoDTO buscarProducto(Integer id) {
+        Producto producto = productoRepository.findById(id).orElse(null);
+
+        if (producto == null) {
+            return null;
+        }
+
+        ProductoDTO dto = new ProductoDTO();
+
+        dto.setIdProducto(producto.getIdProducto());
+        dto.setNombre(producto.getNombre());
+        dto.setPrecio(producto.getPrecio());
+        dto.setStock(producto.getStock());
+        dto.setDescripcion(producto.getDescripcion());
+        dto.setActivo(producto.getActivo());
+        dto.setFechaCreacion(producto.getFechaCreacion());
+        dto.setIdExpansion(producto.getIdExpansion());
+        dto.setIdTipo(producto.getIdTipo());
+        dto.setIdMarca(producto.getIdMarca());
+
+        return dto;
+    }
+
     public ProductoDTO guardarProducto(ProductoDTO dto) {
         Producto producto = new Producto();
 

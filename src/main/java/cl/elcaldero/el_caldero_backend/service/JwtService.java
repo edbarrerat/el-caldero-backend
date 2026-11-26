@@ -1,4 +1,3 @@
-
 package cl.elcaldero.el_caldero_backend.service;
 
 import java.util.Date;
@@ -41,24 +40,28 @@ public class JwtService {
                 .compact();
     }
 
-    private Claims obtenerClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(obtenerClave())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    public String obtenerEmail(String token) {
-        return obtenerClaims(token).getSubject();
-    }
-
-    public boolean validarToken(String token) {
+    public Integer obtenerIdUsuario(String token) {
         try {
-            obtenerClaims(token);
-            return true;
+            Claims claims = Jwts.parser()
+                    .verifyWith(obtenerClave())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            if (claims.getExpiration() == null) {
+                return null;
+            }
+
+            Integer idUsuario = claims.get("idUsuario", Integer.class);
+
+            if (idUsuario == null || idUsuario <= 0) {
+                return null;
+            }
+
+            return idUsuario;
+
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            return null;
         }
     }
 }

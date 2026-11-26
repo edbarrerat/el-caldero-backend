@@ -33,6 +33,17 @@ public class ProductoController {
         return productoService.listarProductos();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoDTO> buscarProducto(@PathVariable Integer id) {
+        ProductoDTO producto = productoService.buscarProducto(id);
+
+        if (producto == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(producto);
+    }
+
     @PostMapping
     public ResponseEntity<ProductoDTO> guardarProducto(@Valid @RequestBody ProductoDTO dto) {
         ProductoDTO nuevoProducto = productoService.guardarProducto(dto);
